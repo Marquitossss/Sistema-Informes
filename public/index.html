@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistema Informes - Guardia Civil</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="icon" href="images/favicon.svg" type="image/svg+xml">
+  <link rel="alternate icon" href="images/favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="loginScreen" class="login-screen">
+    <div class="login-box">
+      <div class="login-emblem">
+        <img src="images/escudo.svg" alt="Guardia Civil" class="escudo-login">
+      </div>
+      <p class="login-org">Sistema Integrado de Gestión Operativa</p>
+      <p class="login-access">Acceso Restringido</p>
+      <form id="loginForm" class="login-form">
+        <div id="loginStep1">
+          <div class="form-group">
+            <label>Usuario</label>
+            <input type="text" id="loginUser" placeholder="Número profesional o usuario" autocomplete="off" autofocus>
+          </div>
+          <div class="form-group">
+            <label>Contraseña</label>
+            <input type="password" id="loginPass" placeholder="••••••••">
+          </div>
+          <p class="login-error" id="loginError"></p>
+          <button type="submit" class="btn btn-primary login-btn">Acceder al Sistema</button>
+        </div>
+      </form>
+      <div id="registroPanel" style="display:none;margin-top:14px;padding-top:14px;border-top:1px solid var(--border-light)">
+        <form id="registroForm">
+          <div class="form-group">
+            <label>Número de Placa *</label>
+            <input type="text" id="regPlaca" placeholder="Ej: GC-12345" required autocomplete="off">
+          </div>
+          <div class="form-group">
+            <label>Nombre Completo</label>
+            <input type="text" id="regNombre" placeholder="Nombre y apellidos">
+          </div>
+          <div class="form-group">
+            <label>Contraseña *</label>
+            <input type="password" id="regPassword" placeholder="Mínimo 6 caracteres" required>
+          </div>
+          <div class="form-group">
+            <label>Confirmar Contraseña *</label>
+            <input type="password" id="regPassword2" placeholder="Repite la contraseña" required>
+          </div>
+          <p class="login-error" id="regError"></p>
+          <p class="login-success" id="regSuccess"></p>
+          <button type="submit" class="btn btn-primary login-btn">Registrarse</button>
+          <button type="button" class="btn btn-secondary login-btn" style="margin-top:8px;background:none;border:1px solid var(--border);color:var(--text-light)" onclick="volverLoginRegistro()">Volver al inicio de sesión</button>
+        </form>
+      </div>
+      <p class="registro-link" id="showRegistro" style="margin-top:14px;font-size:0.8rem;color:var(--text-light);text-align:center">
+        ¿No tienes cuenta? <a href="#" onclick="mostrarRegistro();return false" style="color:var(--accent);text-decoration:none;font-weight:600">Regístrate aquí</a>
+      </p>
+    </div>
+  </div>
+
+  <div id="appScreen" class="layout" style="display:none">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo-section">
+          <div class="sidebar-unit-logo" id="sidebarUnitLogo">
+            <img src="images/escudo.svg" alt="Guardia Civil" class="escudo-sidebar" id="sidebarLogoImg">
+          </div>
+        </div>
+        <h2>Sistema Informes</h2>
+        <span class="sidebar-subtitle">Guardia Civil</span>
+      </div>
+      <nav class="sidebar-nav" id="sidebarNav"></nav>
+      <div class="sidebar-footer">
+        <div class="sidebar-user">
+          <span class="user-name" id="userName"></span>
+          <span class="user-role" id="userRole"></span>
+          <span class="user-badge" id="userBadge"></span>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <button class="menu-toggle" id="menuToggle"><svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="3" y1="5" x2="17" y2="5"/><line x1="3" y1="10" x2="17" y2="10"/><line x1="3" y1="15" x2="17" y2="15"/></svg></button>
+        <div class="topbar-brand">
+          <span class="topbar-brand-logo" id="topbarUnitLogo">
+            <img src="images/escudo.svg" alt="Guardia Civil" class="escudo-topbar" id="topbarLogoImg">
+          </span>
+          <span>Sistema Informes - Guardia Civil</span>
+        </div>
+        <h1 id="pageTitle">Dashboard</h1>
+        <div class="global-search" id="globalSearch">
+          <svg class="gs-icon" viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="9" cy="9" r="5"/><line x1="13" y1="13" x2="17" y2="17"/></svg>
+          <input type="text" id="gsInput" placeholder="Buscar ciudadanos, informes, placas…" autocomplete="off">
+          <span class="gs-kbd">Ctrl+K</span>
+          <div class="gs-dropdown" id="gsDropdown"></div>
+        </div>
+        <div class="topbar-right">
+          <span class="user-identity" id="userIdentity"></span>
+          <span class="role-badge" id="roleBadge"></span>
+          <button class="btn btn-logout" id="logoutBtn">Cerrar Sesión</button>
+        </div>
+      </header>
+
+      <div class="content" id="content">
+        <section id="section-dashboard" class="section active">
+          <div class="dashboard-layout">
+            <div class="dashboard-main">
+              <div class="actividad-reciente" id="actividadReciente">
+                <h3 class="feed-header"><svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="10" cy="10" r="8"/><polyline points="10,5 10,10 13,13"/></svg> Actividad Reciente</h3>
+                <div class="feed-list" id="feedList"></div>
+                <p class="table-empty" id="emptyFeedMsg" style="display:none">Sin actividad reciente.</p>
+              </div>
+            </div>
+            <div class="dashboard-side">
+              <div class="stats-grid">
+                <div class="stat-card stat-gold">
+                  <div class="stat-icon"><svg viewBox="0 0 20 20" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="10" cy="6" r="3.5"/><path d="M3 18c0-3.5 3-6.5 7-6.5s7 3 7 6.5"/></svg></div>
+                  <div class="stat-info">
+                    <span class="stat-number" id="statCiudadanos">0</span>
+                    <span class="stat-label">Ciudadanos</span>
+                  </div>
+                </div>
+                <div class="stat-card stat-gold">
+                  <div class="stat-icon"><svg viewBox="0 0 20 20" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 2h6l4 4v12a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"/><path d="M11 2v4h4"/><line x1="6" y1="10" x2="14" y2="10"/><line x1="6" y1="13" x2="14" y2="13"/></svg></div>
+                  <div class="stat-info">
+                    <span class="stat-number" id="statTotal">0</span>
+                    <span class="stat-label">Informes Totales</span>
+                  </div>
+                </div>
+                <div class="stat-card stat-green">
+                  <div class="stat-icon"><svg viewBox="0 0 20 20" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 10l5 5 9-9"/></svg></div>
+                  <div class="stat-info">
+                    <span class="stat-number" id="statActivos">0</span>
+                    <span class="stat-label">Informes Activos</span>
+                  </div>
+                </div>
+                <div class="stat-card stat-blue">
+                  <div class="stat-icon"><svg viewBox="0 0 20 20" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="10" cy="10" r="8"/><polyline points="10,5 10,10 13,13"/></svg></div>
+                  <div class="stat-info">
+                    <span class="stat-number" id="statPendientes">0</span>
+                    <span class="stat-label">Pendientes</span>
+                  </div>
+                </div>
+                <div class="stat-card stat-gold">
+                  <div class="stat-icon"><svg viewBox="0 0 20 20" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 3h2l1 2h5l1-2h2v12H5V3z"/></svg></div>
+                  <div class="stat-info">
+                    <span class="stat-number" id="statDerivados">0</span>
+                    <span class="stat-label">Informes Derivados</span>
+                  </div>
+                </div>
+                <div class="stat-card stat-red">
+                  <div class="stat-icon"><svg viewBox="0 0 20 20" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="14" height="13" rx="1"/><line x1="3" y1="8" x2="17" y2="8"/><line x1="7" y1="11" x2="13" y2="11"/></svg></div>
+                  <div class="stat-info">
+                    <span class="stat-number" id="statArchivados">0</span>
+                    <span class="stat-label">Archivados</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="section-ciudadanos" class="section">
+          <div class="toolbar">
+            <div class="search-box">
+              <input type="text" id="searchCiuInput" placeholder="Buscar ciudadanos...">
+              <button id="searchCiuBtn"><svg viewBox="0 0 18 18" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="5.5"/><line x1="12" y1="12" x2="16" y2="16"/></svg></button>
+            </div>
+            <button class="btn btn-primary" id="newCiudadanoBtn">+ Nuevo Ciudadano</button>
+          </div>
+          <div class="table-container">
+            <table id="ciudadanosTable">
+              <thead><tr><th>DNI</th><th>Nombre</th><th>Apellidos</th><th>Acciones</th></tr></thead>
+              <tbody id="ciudadanosBody"></tbody>
+            </table>
+          </div>
+          <p class="table-empty" id="emptyCiuMsg">No hay ciudadanos registrados.</p>
+        </section>
+
+        <section id="section-informes" class="section">
+          <div class="toolbar">
+            <div class="search-box">
+              <input type="text" id="searchInfInput" placeholder="Buscar informes...">
+              <button id="searchInfBtn"><svg viewBox="0 0 18 18" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="5.5"/><line x1="12" y1="12" x2="16" y2="16"/></svg></button>
+            </div>
+            <button class="btn btn-primary" id="newInformeBtn">+ Nuevo Informe</button>
+          </div>
+          <div class="table-container">
+            <table id="informesTable">
+              <thead><tr><th>Nº Informe</th><th>Título</th><th>Autor</th><th>Estado</th><th>Fecha</th><th>Acciones</th></tr></thead>
+              <tbody id="informesBody"></tbody>
+            </table>
+          </div>
+          <p class="table-empty" id="emptyInfMsg">No hay informes.</p>
+        </section>
+
+        <section id="section-auditoria" class="section">
+          <h3 style="display:flex;align-items:center;gap:8px"><svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M7 3h6a1 1 0 0 1 1 1v1h1a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h1V4a1 1 0 0 1 1-1z"/><rect x="6" y="2" width="8" height="2" rx=".5"/><line x1="6" y1="9" x2="14" y2="9"/><line x1="6" y1="12" x2="14" y2="12"/><line x1="6" y1="15" x2="10" y2="15"/></svg> Registro de Auditoría</h3>
+          <div class="toolbar">
+            <div class="search-box">
+              <input type="text" id="searchAudInput" placeholder="Buscar en auditoría...">
+              <button id="searchAudBtn"><svg viewBox="0 0 18 18" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="5.5"/><line x1="12" y1="12" x2="16" y2="16"/></svg></button>
+            </div>
+          </div>
+          <div class="table-container">
+            <table id="auditoriaTable">
+              <thead><tr><th>Fecha</th><th>Usuario</th><th>Rol</th><th>Acción</th><th>Detalle</th><th>IP</th></tr></thead>
+              <tbody id="auditoriaBody"></tbody>
+            </table>
+          </div>
+          <p class="table-empty" id="emptyAudMsg">Sin registros.</p>
+        </section>
+
+        <section id="section-uco" class="section">
+          <div class="uco-header">
+            <div class="uco-header-left">
+              <div class="section-header-logo" id="sectionLogoUco">
+                <img src="images/uco-logo.svg" alt="UCO" width="52" height="52">
+              </div>
+              <div>
+                <h3>Unidad Central Operativa</h3>
+                <p>Gestión de informes UCO e informes derivados</p>
+              </div>
+            </div>
+          </div>
+          <div class="uco-tabs">
+            <button class="uco-tab active" data-ucotab="propios">Informes UCO</button>
+            <button class="uco-tab" data-ucotab="nuevo">Nuevo Informe UCO</button>
+            <button class="uco-tab" data-ucotab="derivados">Informes Derivados</button>
+          </div>
+          <div class="uco-panel" id="ucoPropios" style="display:block">
+            <div class="toolbar">
+              <div class="search-box">
+                <input type="text" id="searchUcoInput" placeholder="Buscar informes UCO...">
+                <button id="searchUcoBtn"><svg viewBox="0 0 18 18" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="5.5"/><line x1="12" y1="12" x2="16" y2="16"/></svg></button>
+              </div>
+            </div>
+            <div class="table-container">
+              <table id="ucoTable">
+                <thead><tr><th>Nº Informe</th><th>Título</th><th>Autor</th><th>Tipo</th><th>Estado</th><th>Fecha</th><th>Acciones</th></tr></thead>
+                <tbody id="ucoBody"></tbody>
+              </table>
+            </div>
+            <p class="table-empty" id="emptyUcoMsg">No hay informes UCO.</p>
+          </div>
+          <div class="uco-panel" id="ucoNuevo" style="display:none">
+            <div class="card" style="background:var(--card);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);max-width:700px">
+              <form id="ucoForm">
+                <div class="form-group"><label>Título *</label><input type="text" id="f_uco_titulo" required></div>
+                <div class="form-row">
+                  <div class="form-group"><label>Tipo UCO *</label>
+                    <select id="f_uco_tipo">
+                      <option value="interrogatorio">Interrogatorio</option>
+                      <option value="general">General</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group"><label>Placas participantes</label><input type="text" id="f_uco_placas" placeholder="Ej: UCO-001, UCO-002">
+                  <div class="placas-hint"><svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><path d="M8 5v3l2 2"/></svg> Formato recomendado: <strong>123</strong> - <strong>456</strong> - <strong>789</strong></div>
+                </div>
+                <div class="form-group"><label>Ciudadano</label><select id="f_uco_ciudadano"><option value="">-- Ninguno --</option></select></div>
+                <div class="form-group"><label>Contenido</label>
+                  <div class="editor-toolbar">
+                    <button type="button" class="editor-btn" onmousedown="execFormat('bold', event)" title="Negrita"><strong>B</strong></button>
+                    <button type="button" class="editor-btn" onmousedown="execFormat('italic', event)" title="Cursiva"><em>I</em></button>
+                  </div>
+                  <div id="f_uco_contenido" class="editor-content" contenteditable="true" style="min-height:130px"></div>
+                </div>
+                <div class="form-group"><label>Archivos adjuntos</label>
+                  <div class="file-zone" id="ucoFileZone">
+                    <div class="file-zone-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3v12m0 0-4-4m4 4 4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg></div>
+                    <div class="file-zone-text"><strong>Seleccionar archivos</strong> o arrastra aquí</div>
+                    <div class="file-zone-hint">PDF, JPG, PNG · Archivos múltiples permitidos</div>
+                    <input type="file" id="f_uco_archivos" accept="image/*,.pdf" multiple>
+                  </div>
+                </div>
+                <div class="file-preview" id="ucoFilePreview"></div>
+                <button type="submit" class="btn btn-primary" style="margin-top:12px">Crear Informe UCO</button>
+              </form>
+            </div>
+          </div>
+          <div class="uco-panel" id="ucoDerivados" style="display:none">
+            <div class="table-container">
+              <table id="derivadosTable">
+                <thead><tr><th>Nº Derivado</th><th>Título</th><th>Origen</th><th>Estado</th><th>Fecha</th><th>Acciones</th></tr></thead>
+                <tbody id="derivadosBody"></tbody>
+              </table>
+            </div>
+            <p class="table-empty" id="emptyDerMsg">No hay informes derivados.</p>
+          </div>
+        </section>
+
+        <section id="section-fyf" class="section">
+          <div class="fyf-header">
+            <div class="uco-header-left">
+              <div class="section-header-logo" id="sectionLogoFyf">
+                <img src="images/fyf-patch.jpg" alt="FyF" width="52" height="52">
+              </div>
+              <div>
+                <h3>Fiscal y Fronteras</h3>
+                <p>Gestión de operativos FyF</p>
+              </div>
+            </div>
+          </div>
+          <div class="fyf-tabs">
+            <button class="fyf-tab active" data-fyftab="propios">Informes FyF</button>
+            <button class="fyf-tab" data-fyftab="nuevo">Nuevo Informe FyF</button>
+          </div>
+          <div class="fyf-panel" id="fyfPropios" style="display:block">
+            <div class="toolbar">
+              <div class="search-box">
+                <input type="text" id="searchFyfInput" placeholder="Buscar informes FyF...">
+                <button id="searchFyfBtn"><svg viewBox="0 0 18 18" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="5.5"/><line x1="12" y1="12" x2="16" y2="16"/></svg></button>
+              </div>
+            </div>
+            <div class="table-container">
+              <table id="fyfTable">
+                <thead><tr><th>Nº Informe</th><th>Título</th><th>Autor</th><th>Tipo</th><th>Estado</th><th>Fecha</th><th>Acciones</th></tr></thead>
+                <tbody id="fyfBody"></tbody>
+              </table>
+            </div>
+            <p class="table-empty" id="emptyFyfMsg">No hay informes FyF.</p>
+          </div>
+          <div class="fyf-panel" id="fyfNuevo" style="display:none">
+            <div class="card" style="background:var(--card);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);max-width:700px">
+              <form id="fyfForm">
+                <div class="form-group"><label>Título *</label><input type="text" id="f_fyf_titulo" required></div>
+                <div class="form-row">
+                  <div class="form-group"><label>Tipo FyF *</label>
+                    <select id="f_fyf_tipo">
+                      <option value="general">General</option>
+                      <option value="indocumentado">Indocumentado</option>
+                      <option value="armas">Armas</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group"><label>Placas participantes</label><input type="text" id="f_fyf_placas" placeholder="Ej: FYF-001, FYF-002">
+                  <div class="placas-hint"><svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><path d="M8 5v3l2 2"/></svg> Formato recomendado: <strong>123</strong> - <strong>456</strong> - <strong>789</strong></div>
+                </div>
+                <div class="form-group"><label>Ciudadano</label><select id="f_fyf_ciudadano"><option value="">-- Ninguno --</option></select></div>
+                <div class="form-group"><label>Contenido</label>
+                  <div class="editor-toolbar">
+                    <button type="button" class="editor-btn" onmousedown="execFormat('bold', event)" title="Negrita"><strong>B</strong></button>
+                    <button type="button" class="editor-btn" onmousedown="execFormat('italic', event)" title="Cursiva"><em>I</em></button>
+                  </div>
+                  <div id="f_fyf_contenido" class="editor-content" contenteditable="true" style="min-height:130px"></div>
+                </div>
+                <div class="form-group"><label>Archivos adjuntos</label>
+                  <div class="file-zone" id="fyfFileZone">
+                    <div class="file-zone-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3v12m0 0-4-4m4 4 4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg></div>
+                    <div class="file-zone-text"><strong>Seleccionar archivos</strong> o arrastra aquí</div>
+                    <div class="file-zone-hint">PDF, JPG, PNG · Archivos múltiples permitidos</div>
+                    <input type="file" id="f_fyf_archivos" accept="image/*,.pdf" multiple>
+                  </div>
+                </div>
+                <div class="file-preview" id="fyfFilePreview"></div>
+                <button type="submit" class="btn btn-primary" style="margin-top:12px">Crear Informe FyF</button>
+              </form>
+            </div>
+          </div>
+        </section>
+
+        <section id="section-admin" class="section">
+          <h3 style="display:flex;align-items:center;gap:8px"><svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10 13a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/><path d="M17 10a7 7 0 0 0-.3-2l1.8-1.2-1.5-2.6-2 .6a6.8 6.8 0 0 0-1.7-1L13 2h-3l-.3 1.8a6.8 6.8 0 0 0-1.7 1l-2-.6L4.5 6.8 6.3 8A7 7 0 0 0 6 10c0 .7.1 1.4.3 2l-1.8 1.2 1.5 2.6 2-.6a6.8 6.8 0 0 0 1.7 1L10 18h3l.3-1.8a6.8 6.8 0 0 0 1.7-1l2 .6 1.5-2.6L17 12a7 7 0 0 0 .3-2z"/></svg> Administración del Sistema</h3>
+          <div class="admin-tabs">
+            <button class="admin-tab active" data-admintab="usuarios">Usuarios</button>
+            <button class="admin-tab" data-admintab="verificaciones">Verificaciones</button>
+
+          </div>
+          <div class="admin-panel" id="adminTabUsuarios">
+            <div class="toolbar">
+              <button class="btn btn-primary" id="newUserBtn">+ Nuevo Usuario</button>
+            </div>
+            <div class="table-container">
+              <table id="usuariosTable">
+                <thead><tr><th>ID</th><th>Usuario</th><th>Roles</th><th>Nombre</th><th>Nº Prof.</th><th>Verificado</th><th>Estado</th><th>Acciones</th></tr></thead>
+                <tbody id="usuariosBody"></tbody>
+              </table>
+            </div>
+            <p class="table-empty" id="emptyUsersMsg">No hay usuarios.</p>
+          </div>
+          <div class="admin-panel" id="adminTabVerificaciones" style="display:none">
+            <div class="toolbar">
+              <span style="font-size:0.85rem;color:var(--text-light)">Cuentas pendientes de verificación (<strong id="pendientesCount">0</strong>)</span>
+              <button class="btn btn-secondary btn-sm" onclick="loadPendientes()"><svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8a6 6 0 0 1 11.5-2.5"/><polyline points="13.5 2 13.5 5.5 10 5.5"/><path d="M14 8a6 6 0 0 1-11.5 2.5"/><polyline points="2.5 14 2.5 10.5 6 10.5"/></svg></button>
+            </div>
+            <div class="table-container">
+              <table id="pendientesTable">
+                <thead><tr><th>ID</th><th>Usuario</th><th>Fecha Registro</th><th>Estado</th><th>Roles a asignar</th><th>Acciones</th></tr></thead>
+                <tbody id="pendientesBody"></tbody>
+              </table>
+            </div>
+            <p class="table-empty" id="emptyPendMsg">No hay cuentas pendientes de verificación.</p>
+          </div>
+
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal" id="modalContent">
+      <div class="modal-header">
+        <h3 id="modalTitle">Título</h3>
+        <button class="modal-close" id="modalClose"><svg viewBox="0 0 18 18" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="4" y1="4" x2="14" y2="14"/><line x1="14" y1="4" x2="4" y2="14"/></svg></button>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+      <div class="modal-footer" id="modalFooter"></div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+{
+  "name": "sigc-rp",
+  "version": "2.0.0",
+  "description": "Sistema Integrado de Gestión de Ciudadanos para Roleplay",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "express-session": "^1.18.0",
+    "multer": "^2.1.1",
+    "sql.js": "^1.11.0"
+  }
+}

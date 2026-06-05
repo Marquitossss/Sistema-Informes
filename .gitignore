@@ -1,0 +1,4 @@
+node_modules/
+sigc.db
+*.txt
+.env
