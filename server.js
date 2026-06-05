@@ -905,18 +905,18 @@ app.get('/informes*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-db.init().then(async () => {
-  await seedUsers();
+db.init()
+  .then(async () => {
+    await seedUsers();
 
-  db.run("DELETE FROM auditoria WHERE accion IN ('INICIO_SESION','CIERRE_SESION')");
+    db.run("DELETE FROM auditoria WHERE accion IN ('INICIO_SESION','CIERRE_SESION')");
 
-  const PORT = process.env.PORT || 3000;
+    const PORT = process.env.PORT || 3000;
 
-  app.listen(PORT, () => {
-    console.log(`Sistema Informes - Guardia Civil corriendo en puerto ${PORT}`);
+    app.listen(PORT, () => {
+      console.log(`Sistema Informes - Guardia Civil corriendo en puerto ${PORT}`);
+    });
+  })
+  .catch(err => {
+    console.error('Error:', err);
   });
-});
-  });
-}).catch(err => {
-  console.error('Error:', err);
-});
