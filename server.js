@@ -907,8 +907,14 @@ app.get('/informes*', (req, res) => {
 db.init().then(async () => {
   await seedUsers();
   db.run("DELETE FROM auditoria WHERE accion IN ('INICIO_SESION','CIERRE_SESION')");
+
+  const PORT = process.env.PORT || 3000;
+
   app.listen(PORT, () => {
-    console.log(`Sistema Informes - Guardia Civil corriendo en http://localhost:${PORT}/informes`);
+    console.log(`Sistema Informes - Guardia Civil corriendo en puerto ${PORT}`);
+  });
+
+})
   });
 }).catch(err => {
   console.error('Error:', err);
