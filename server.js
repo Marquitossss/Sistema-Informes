@@ -900,12 +900,14 @@ app.get('/api/buscar', requireAuth, (req, res) => {
 });
 
 app.get('/', (req, res) => res.redirect('/informes'));
+
 app.get('/informes*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 db.init().then(async () => {
   await seedUsers();
+
   db.run("DELETE FROM auditoria WHERE accion IN ('INICIO_SESION','CIERRE_SESION')");
 
   const PORT = process.env.PORT || 3000;
@@ -913,8 +915,7 @@ db.init().then(async () => {
   app.listen(PORT, () => {
     console.log(`Sistema Informes - Guardia Civil corriendo en puerto ${PORT}`);
   });
-
-})
+});
   });
 }).catch(err => {
   console.error('Error:', err);
